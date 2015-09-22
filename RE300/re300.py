@@ -1,4 +1,8 @@
 #!/usr/bin/env python
+"""
+Author: William Showalter
+CSAW Team: MSU-CTF
+"""
 import sys
 import re
 from pwn import *
@@ -13,43 +17,43 @@ server_address = 'localhost'
 if __name__ == "__main__":
 	sock = remote(server_address, PORT, timeout=None)
 
-	reply = sock.recv(100)
+	reply = sock.recv()
 	print reply
 
 	command = "USER " + USERNAME
 	sock.sendline(command)
-	reply = sock.recv(100)
+	reply = sock.recv()
 	print command +"\n" + reply
-	sock.recv(100)
+	sock.recv()
 
 	command = "PASS " + PASSWORD
 	sock.sendline(command)
-	reply = sock.recv(100)
+	reply = sock.recv()
 	print command +"\n" + reply
 
 	sock.sendline("PASV")
-	reply = sock.recv(100)
+	reply = sock.recv()
 	pasvPort = int(re.findall("(\d+)",reply)[0])
 
 	sock2 = remote(server_address, pasvPort, timeout=None)
 
 	sock.sendline("LIST")
-	reply = sock2.recv(1024)
+	reply = sock2.recv()
 	sock2.close()
 	print reply
 
 	sock.sendline("PASV")
-	reply = sock.recv(100)
+	reply = sock.recv()
 	pasvPort = int(re.findall("(\d+)",reply)[0])
 
 	sock.sendline("RDF")
-	reply = sock.recv(100)
+	reply = sock.recv()
 	print "RE3 FLAG: %s" % (reply)
 
 	sock2 = remote(server_address, pasvPort, timeout=1)
 	sock.sendline("RETR flag.txt")
-	print sock.recv(100)
-	reply = sock2.recv(1024)
+	print sock.recv()
+	reply = sock2.recv()
 	print "EXP300 flag.txt reply %s" % reply
 
 	sock2.close()

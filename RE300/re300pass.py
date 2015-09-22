@@ -1,11 +1,15 @@
 #!/usr/bin/env python
-
+"""
+Author: William Showalter
+CSAW Team: MSU-CTF
+"""
 import sys
 
 re3Seed = 0xd386d209
 guessString = ""
 
 def nextCharacter(passConstant,passstr):
+	# If more than one character away from done
 	if passConstant > (0x1505)*33:
 		for p in range(48,123):
 			if (passConstant-p)%33 == 0:
@@ -13,11 +17,14 @@ def nextCharacter(passConstant,passstr):
 				if attempt != 0:
 					return attempt
 		return 0
+	# Found correct value, reverse string
 	elif passConstant == 0x1505:
 		return passstr[::-1]
+	# Should never recurse when less than 0x1505
 	elif passConstant < 0x1505:
 		print "BUG"
 		return 0
+	# Attempt to find last character
 	else:
 		for p in range(48,123):
 			if (passConstant-p)%33 == 0x1505:
@@ -26,6 +33,7 @@ def nextCharacter(passConstant,passstr):
 
 def findPassword(seed):
 	flag = False
+	# Increment value of seed high-bits and rerun the backtrack on a new string.
 	while (not flag):
 		password = nextCharacter(seed,guessString)
 		if seed > 0xFFFFFFFFFFFFFFFF:
